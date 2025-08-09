@@ -1,0 +1,13 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+h1 {
+    font-size: 1.2em;
+}
+ol {
+    margin-top: 20px;
+}
+button {
+    padding: 8px 16px;
+}

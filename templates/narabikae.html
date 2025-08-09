@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% extends "workSheet_base.html" %}
+
+    {% block content %}
+    <!-- 問題作成ボタン-->
+    <form action="/" method="post" enctype="multipart/form-data">
+        <!-- CSVファイル選択 -->
+        <label>CSVファイルを選択：</label>
+        <input type="file" name="csv_file" accept=".csv" required><br><br>
+
+        <!-- 出題数 -->
+        <label>出題数：</label>
+        <input type="number" name="count" value="{{ default_count }}" min="1"><br><br>
+
+        <!-- カナモード選択 -->
+        <label>かなモード：</label>
+        {% for key, label in kana_modes.items() %}
+            <label>
+                <input type="radio" name="kana_mode" value="{{ key }}" {% if loop.first %}checked{% endif %}>
+                {{ label }}
+            </label>
+        {% endfor %}
+        <br><br>
+
+        <button type="submit">問題を作成</button>
+    </form>
+    {% endblock %}
+
+</body>
+</html>

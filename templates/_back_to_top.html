@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- トップに戻るボタン -->
+    <form action="{{ url_for('top.index') }}" method="get">
+        <button type="submit">トップに戻る</button>
+    </form>
+</body>
+</html>

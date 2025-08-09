@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>{{ title }}</h1>
+
+    <form action="/" method="post" enctype="multipart/form-data">
+        <!-- シート名選択-->
+        <label>シート名を選択してください。</label><br>
+        {% for key, sheet_name in sheet_names.items() %}
+            <input type="radio" name="sheet_name" value="{{ key }}" required>{{ sheet_name }}<br>
+        {% endfor %}
+        <br>
+        <button type="submit">シートを選択</button>
+    </form>
+</body>
+</html>

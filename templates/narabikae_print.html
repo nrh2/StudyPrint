@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>{{ question_text }}</h1>
+
+    <ol>
+        {% for word in words %}
+            <li>{{ word }}　（　　　　　　）</li>
+        {% endfor %}
+    </ol>
+
+    <button onclick="window.print()">印刷</button>
+</body>
+</html>
