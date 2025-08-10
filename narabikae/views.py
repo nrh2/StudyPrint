@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request
-from constants import (
-    PAGE_TITLE_NARABIKAE, PAGE_TITLE_NARABIKAE_PRINT, QUESTION_TEMPLATE,
-    KANA_MODES, DEFAULT_QUESTION_COUNT
+from . import narabikae_bp
+from common.constants import KANA_MODES
+from .constants import (
+    PAGE_TITLE, PAGE_TITLE_PRINT,
+    QUESTION_TEMPLATE, DEFAULT_QUESTION_COUNT
 )
-from utils import shuffle_word, read_csv, select_questions
-
-narabikae_bp = Blueprint('narabikae', __name__, url_prefix='/narabikae')
+from common.utils import shuffle_word, read_csv, select_questions
 
 @narabikae_bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -33,7 +33,7 @@ def index():
         # 結果画面描画
         return render_template(
             'narabikae_print.html',
-            title=PAGE_TITLE_NARABIKAE_PRINT,
+            title=PAGE_TITLE_PRINT,
             question_text=question_text,
             words=shuffled_words
         )
@@ -41,7 +41,7 @@ def index():
     # GETリクエスト時（初期表示）
     return render_template(
         'narabikae.html',
-        title=PAGE_TITLE_NARABIKAE,
+        title=PAGE_TITLE,
         kana_modes=KANA_MODES,
         default_count=DEFAULT_QUESTION_COUNT
     )

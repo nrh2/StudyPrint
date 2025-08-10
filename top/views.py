@@ -1,13 +1,8 @@
-
-# top.py から全コピーした
-
 # -*- coding: utf-8 -*-
 from flask import render_template, request, redirect, url_for
 from . import top_bp
-
-from constants import (
-    PAGE_TITLE_TOP,SHEET_NAMES
-)
+from common.constants import SHEET_NAMES
+from .constants import PAGE_TITLE_TOP
 
 # トップページ処理
 @top_bp.route('/', methods=['GET', 'POST'])
