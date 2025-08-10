@@ -13,7 +13,8 @@
     <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
         <!-- CSVファイル選択 -->
         <label>CSVファイルを選択：</label>
-        <input type="file" name="csv_file" accept=".csv" required><br><br>
+        <!-- <input type="file" name="csv_file" accept=".csv" required><br><br> -->
+        <input type="file" name="csv_file" accept=".csv"><br><br>
 
         <!-- 出題数 -->
         <label>出題数：</label>

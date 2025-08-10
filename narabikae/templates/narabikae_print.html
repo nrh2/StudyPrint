@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    {% extends "workSheet_base.html" %}
+    {% block content %}
     <h1>{{ question_text }}</h1>
 
     <ol>
@@ -14,11 +16,15 @@
         {% endfor %}
     </ol>
 
-    <!-- 再作成ボタン -->
+    <!-- 問題再作成ボタン -->
     <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="is_retry" value="true">
+        <input type="hidden" name="count" value="{{ count }}">
+        <input type="hidden" name="kana_mode" value="{{ kana_mode }}">
         <button type="submit">問題再作成</button>
     </form>
 
     <button onclick="window.print()">印刷</button>
+    {% endblock %}
 </body>
 </html>
