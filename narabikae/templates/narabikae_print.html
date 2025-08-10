@@ -14,6 +14,11 @@
         {% endfor %}
     </ol>
 
+    <!-- 再作成ボタン -->
+    <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
+        <button type="submit">問題再作成</button>
+    </form>
+
     <button onclick="window.print()">印刷</button>
 </body>
 </html>
