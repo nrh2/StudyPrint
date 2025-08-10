@@ -2,12 +2,12 @@
 import io
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from . import narabikae_bp
-from common.constants import KANA_MODES
-from .constants import (
-    PAGE_TITLE, PAGE_TITLE_PRINT,
-    QUESTION_TEMPLATE, DEFAULT_QUESTION_COUNT
-)
+from common.constants import KANA_MODES, SHEET_INFO
+from .constants import QUESTION_TEMPLATE, DEFAULT_QUESTION_COUNT
 from common.utils import shuffle_word, read_csv, select_questions
+
+sheet_key = narabikae_bp.name
+page_title = SHEET_INFO[sheet_key]["label"]
 
 @narabikae_bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -34,8 +34,8 @@ def index():
                 session['words'] = words
 
         if not genre or not words:
-                flash('先にCSVファイルをアップロードしてください。')
-                return redirect(url_for('narabikae.index'))
+            flash('先にCSVファイルをアップロードしてください。')
+            return redirect(url_for('narabikae.index'))
 
         # 出題数取得（未入力ならデフォルト値）
         try:
@@ -56,7 +56,7 @@ def index():
         # 結果画面描画
         return render_template(
             'narabikae_print.html',
-            title=PAGE_TITLE_PRINT,
+            title=page_title,
             question_text=question_text,
             words=shuffled_words,
             count=count,
@@ -66,7 +66,7 @@ def index():
     # GET（初期表示）
     return render_template(
         'narabikae.html',
-        title=PAGE_TITLE,
+        title=page_title,
         kana_modes=KANA_MODES,
         default_count=DEFAULT_QUESTION_COUNT
     )
