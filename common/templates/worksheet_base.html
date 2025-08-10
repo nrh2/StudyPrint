@@ -6,10 +6,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>{{ title }}</h1>
+    <!-- 共通タイトル -->
+    <h1 class="page-title">{{ title }}</h1>
+
+    <!-- flashメッセージ -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash">
+                {% for msg in messages %}
+                    <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     <!-- コンテンツ部分 -->
-     {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
     <hr>
 
     <!-- トップに戻るボタン-->
