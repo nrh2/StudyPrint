@@ -1,0 +1,39 @@
+﻿# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.so
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Tools / caches
+.mypy_cache/
+.ruff_cache/
+.pylint.d/
+.ipynb_checkpoints/
+
+# Editors
+.vscode/
+.idea/
+
+# OS / misc
+.DS_Store
+*.log
+
+# Flask
+instance/
+*.db
