@@ -2,8 +2,9 @@
 from typing import Callable, Tuple, Optional, List
 from flask import Request, session
 
-# POSTパラメータの is_retry を真偽値化
+
 def is_retry(request: Request) -> bool:
+    """POSTパラメータの is_retry を真偽値化"""
     return request.form.get('is_retry', '').lower() == 'true'
 
 def load_genre_words(
@@ -14,7 +15,7 @@ def load_genre_words(
     session_words_key: str = 'words',
     use_session_when_retry: bool = True,
 ) -> Tuple[Optional[str], Optional[list[str]], str]:
-
+    
     """
     CSV or セッションから (genre, words) を取得。
     戻り値: (genre, words, source)  # source in {'csv','session','none'}
@@ -38,7 +39,7 @@ def load_genre_words(
         source = 'csv'
     return genre, words, source
 
-# フォーム値を int 化。失敗時は default。
+
 def parse_int(
     request: Request,
     name: str,
@@ -46,6 +47,7 @@ def parse_int(
     min_value: Optional[int] = None,
     max_value: Optional[int] = None
 ) -> int:
+    """フォーム値を int 化。失敗時は default。"""
     try:
         v = int(request.form.get(name, default))
     except (TypeError, ValueError):
