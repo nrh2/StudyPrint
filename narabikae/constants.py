@@ -8,3 +8,9 @@ QUESTION_TEMPLATE = "ならびかえると {genre} のなまえになるよ。�
 # ==== 設定値 ====
 # デフォルトの出題数
 DEFAULT_QUESTION_COUNT = 5
+
+# ことば手入力のテキストボックス初期表示数
+DEFAULT_MANUAL_INPUT_COUNT = 10
+
+# ことば手入力のテキストボックス上限
+MAX_MANUAL_INPUT_COUNT = 50
