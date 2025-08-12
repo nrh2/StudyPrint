@@ -59,4 +59,38 @@ def parse_int(
     return v
 
 
+def save_munual_form_request(
+    request: Request,
+    session_genre_key: str = 'manual_genre',
+    session_words_key: str = 'manual_words'
+) -> Tuple[str, List[str]]:
+    """フォームからの手入力（ジャンル/ことば[]）を読み取り、空白除去してセッションに保存"""
+    manual_genre = (request.form.get('manual_genre') or '').strip()
+    manual_words = [w.strip() for w in request.form.getlist('manual_words')]
+    manual_words = [w for w in manual_words if w]   # 空白除去
+    session[session_genre_key] = manual_genre
+    session[session_words_key] = manual_words
+    return manual_genre, manual_words
+
+
+def load_csv_from_request(
+    request: Request,
+    read_csv_fn: Callable,
+    csv_field: str = 'csv_file',
+    session_genre_key: str = 'genre',
+    session_words_key: str = 'words'
+) -> Tuple[bool, Optional[str], Optional[list[str]]]:
+    """
+    アップロードされたCSVを読み取り、（bool、ジャンル、ワード）を返す。
+    成功時はセッションにも保存する。
+    ファイル未指定等なら、ok=False
+    """
+    file = request.files.get(csv_field)
+    if not (file and file.filename):
+        return False, None, None
+    genre, words = read_csv_fn(file.stream)
+    session[session_genre_key] = genre
+    session[session_words_key] = words
+    return True, genre, words
+
 
