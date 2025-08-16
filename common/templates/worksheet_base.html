@@ -7,7 +7,7 @@
 </head>
 <body>
     <!-- 共通タイトル -->
-    <h1 class="page-title">{{ title }}</h1>
+    <h1 class="page_title">{{ title }}</h1>
 
     <!-- flashメッセージ -->
     {% with messages = get_flashed_messages() %}
@@ -26,7 +26,7 @@
 
     <!-- トップに戻るボタン-->
     <form action="{{ url_for('top.index') }}" method="get">
-        <button type=""submit>トップに戻る</button>
+        <button class="no_print" type=""submit>トップに戻る</button>
     </form>
 </body>
 </html>

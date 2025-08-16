@@ -16,13 +16,13 @@ APP_INFO = {
 # シート情報
 SHEET_INFO = {
     "narabikae" : {
-        "label" : "ことば並び替え",
+        "label" : "ならびかえて できる ことばは？",
         "summary" : "文字を並び変えて正しいことばを作る練習",
         "endpoint" : "narabikae.index",
         "icon" : ""
     },
     "kana_hennkann": {
-        "label" : "かなカナ変換",
+        "label" : "ひらがな カタカナ へんかん",
         "summary" : "ひらがな／カタカナの変換練習",
         "endpoint" : "kana_hennkann.index",
         "icon" : ""
