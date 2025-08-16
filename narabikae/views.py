@@ -92,18 +92,18 @@ def index():
             # カナモード取得（今は未使用、将来拡張用）
             kana_mode = request.form.get('kana_mode', 'hiragana')
             logger.info("%s：かなモード設定=%s", page_title, kana_mode)
-        logger.info("%s：かなモード設定=%s", page_title, kana_mode)
+            logger.info("%s：かなモード設定=%s", page_title, kana_mode)
 
             # 出題単語抽出 & 単語シャッフル
             selected_words = select_questions(words, question_count)
             shuffled_words = [shuffle_word(w) for w in selected_words]
             logger.info("%s：問題生成完了 生成数=%d", page_title, len(shuffled_words))
-        logger.info("%s：問題生成完了 生成数=%d", page_title, len(shuffled_words))
+            logger.info("%s：問題生成完了 生成数=%d", page_title, len(shuffled_words))
 
             # 問題文生成
             question_text = QUESTION_TEMPLATE.format(genre=genre)
             logger.info("%s：問題文生成完了", page_title)
-        logger.info("%s：問題文生成完了", page_title)
+            logger.info("%s：問題文生成完了", page_title)
 
             # 結果画面描画
             return render_template(
