@@ -12,6 +12,7 @@ button {
     padding: 8px 16px;
 }
 
+
 /*******************************************************************/
 /*【手入力モーダル設定】*/
 /*******************************************************************/
@@ -57,10 +58,50 @@ button {
 }
 
 
+
+.page_title {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom:1em;
+}
+
+
 /*******************************************************************/
-/*【問題文出力】*/
+/*【印刷画面】*/
+/*******************************************************************/
+.print_date_name {
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.date_name_underline {
+    border-bottom: 1px solid #000;
+    margin-right: 1.5em;
+}
+
+.print_question {
+    font-size: 1.5em;
+    margin-bottom: 1em;
+    white-space: pre-line;      /* \n を開業として表示 */
+}
+
+/*******************************************************************/
+/*【問題出力】*/
 /*******************************************************************/
 .print_page {
-    font-size: 28px;
+    font-size: 1.8em;
     line-height: 1.8;
+}
+
+.print_question_underline {
+    font-size: 0.5em;
+    border-bottom: 1px solid #000;
+    margin-right: 1.5em;
+}
+
+/* 画面表示はするが、印刷時は非表示 */
+@media print {
+    .no_print {
+        display: none !important;
+    }
 }
