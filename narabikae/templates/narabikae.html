@@ -1,39 +1,89 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    {% extends "workSheet_base.html" %}
+{% extends "worksheet_base.html" %}
 
-    {% block content %}
-    <!-- 問題作成ボタン-->
+{% block content %}
+
+<!-- ============ CSV 取り込み ============ -->
+<section class="card">
+    <h2>CSVファイルから取り込む</h2>
     <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
-        <!-- CSVファイル選択 -->
-        <label>CSVファイルを選択：</label>
-        <!-- <input type="file" name="csv_file" accept=".csv" required><br><br> -->
-        <input type="file" name="csv_file" accept=".csv"><br><br>
+        <input type="hidden" name="action" value="csv_load">
+        <label class="form-label">CSVファイルを選択：</label>
+        <input class="form-input" type="file" name="csv_file" accept=".csv">
+    </form>
+</section>
 
-        <!-- 出題数 -->
-        <label>出題数：</label>
-        <input type="number" name="count" value="{{ default_count }}" min="1"><br><br>
+<hr>
 
-        <!-- カナモード選択 -->
-        <label>かなモード：</label>
+<!-- ============ 手入力ダイアログ起動 ============ -->
+<section class="card">
+    <h2>手入力</h2>
+    <p>下記ボタンからジャンルとことばを入力できます。</p>
+    <button class="button" type="button" id="openManualBtn">ことば入力</button>
+</section>
+
+<!-- ============ 手入力モーダル ============ -->
+<div class="modal" id="manualModal" aria-hidden="true" style="display:none;">
+    <div class="modal__backdrop" id="manualBackdrop"></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="manualModalTitle">
+        <div class="modal__header">
+            <h3 id="manualModalTitle">ジャンルと使用することばを入力してください</h3>
+        </div>
+
+        <div class="modal__body">
+            <form id="manualForm" action="{{ url_for('narabikae.index') }}" method="post">
+                <input type="hidden" name="action" value="manual_save">
+
+                <label class="form-label" for="manual_genre">ジャンル名：</label>
+                <input class="form-input" id="manual_genre" name="manual_genre" type="text"
+                       value="{{ manual_genre|default('') }}">
+                <br><br>
+
+                <label class="form-label">ことば入力</label>
+                <br>
+                {# 単語入力ボックス（初期5個） #}
+                {% set cnt = default_manual_count or 5 %}
+                {% for i in range(cnt) %}
+                    <label class="form-label" for="manual_word_{{ i }}">{{ i+1 }}</label>
+                    <input class="form-input" id="manual_word_{{ i }}" name="manual_words" type="text"
+                    value="{{ manual_words[i] if manual_words and i < manual_words|length else '' }}">
+                    <br>
+                {% endfor %}
+
+                <br>
+                <div class="modal__footer">
+                    <button class="button button--primary" type="submit">保存</button>
+                    <button class="button" type="button" id="closeManualBtn">キャンセル</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 問題を作成 ============ -->
+<section class="card">
+    <h2>問題を作成</h2>
+    <form action="{{ url_for('narabikae.index') }}" method="post">
+        <input type="hidden" name='action' value="generate">
+
+        <label class="form-label">出題数：</label>
+        <input class="form-input" type="number" name="question_count"
+               value="{{ default_count }}" min="1"><br>
+
+        <label class="form-label">かなモード：</label>
         {% for key, label in kana_modes.items() %}
             <label>
-                <input type="radio" name="kana_mode" value="{{ key }}" {% if loop.first %}checked{% endif %}>
+                <input type="radio" name="kana_mode"
+                       value="{{ key }}" {% if loop.first %}checked{% endif %}>
                 {{ label }}
             </label>
         {% endfor %}
+
         <br><br>
-
-        <button type="submit">問題を作成</button>
-
+        <button class="button button--primary" type="submit">問題を作成</button>
     </form>
-    {% endblock %}
+</section>
 
-</body>
-</html>
+<script src="{{ url_for('static', filename='hand_writing_modal.js') }}"></script>
+{% endblock %}
