@@ -10,16 +10,19 @@
     {% block content %}
     <h1>{{ question_text }}</h1>
 
-    <ol>
+    <ol class="print_page">
         {% for word in words %}
-            <li>{{ word }}　（　　　　　　）</li>
+            <li>
+                {{ word }}<br>
+                （　　　　　　　　　　　　　　　　　　　　）
+            </li>
         {% endfor %}
     </ol>
 
     <!-- 問題再作成ボタン -->
     <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="is_retry" value="true">
-        <input type="hidden" name="count" value="{{ count }}">
+        <input type="hidden" name="action" value="generate">
+        <input type="hidden" name="question_count" value="{{ count }}">
         <input type="hidden" name="kana_mode" value="{{ kana_mode }}">
         <button type="submit">問題再作成</button>
     </form>

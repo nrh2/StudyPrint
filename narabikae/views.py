@@ -66,9 +66,11 @@ def index():
             if source_prefer == 'manual' or (manual_genre and manual_words and not csv_words):
                 logging.info("%s：手入力データ使用", page_title)
                 genre, words = manual_genre, manual_words
+                used_source = 'manual'
             else:
                 logging.info("%s：CSVデータ使用", page_title)
                 genre, words = csv_genre, csv_words
+                used_source = 'csv'
             
             if not genre or not words:
                 logging.warning("%s：ジャンルもしくは単語の有効なデータがありません。", page_title)
@@ -84,8 +86,7 @@ def index():
             else:
                 logging.warning("%s：出題数が不正のため、デフォルト値に矯正 デフォルト値=%s",
                                 page_title, DEFAULT_QUESTION_COUNT)
-            
-            
+
             # カナモード取得（今は未使用、将来拡張用）
             kana_mode = request.form.get('kana_mode', 'hiragana')
             logger.info("%s：かなモード設定=%s", page_title, kana_mode)
@@ -106,7 +107,8 @@ def index():
                 question_text=question_text,
                 words=shuffled_words,
                 count=question_count,
-                kana_mode=kana_mode
+                kana_mode=kana_mode,
+                used_source=used_source
             )
 
     # request.method == GET（初期表示）

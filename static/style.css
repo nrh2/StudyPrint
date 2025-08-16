@@ -11,3 +11,56 @@ ol {
 button {
     padding: 8px 16px;
 }
+
+/*******************************************************************/
+/*【手入力モーダル設定】*/
+/*******************************************************************/
+/* モーダル全体（非表示時はJSが display:none にする） */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;            /* デフォルト非表示 */
+    justify-content: center;  /* 横方向中央 */
+    align-items: center;      /* 縦方向中央 */
+    z-index: 1000;            /* 最前面に */
+}
+/* 背景（半透明の黒） */
+.modal__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+/* モーダル本体（白いカード） */
+.modal__panel {
+    position: relative;
+    background: #fff;
+    padding: 2em;
+    border-radius: 8px;
+    z-index: 1001;
+    max-width: 500px;
+    width: 80%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.modal__header {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5em;
+}
+
+
+/*******************************************************************/
+/*【問題文出力】*/
+/*******************************************************************/
+.print_page {
+    font-size: 28px;
+    line-height: 1.8;
+}
