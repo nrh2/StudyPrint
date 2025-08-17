@@ -13,8 +13,6 @@ from .constants import (
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
 sheet_key = narabikae_bp.name
 page_title = SHEET_INFO[sheet_key]["label"]
 
@@ -48,7 +46,7 @@ def index():
             manual_genre = session.get('manual_genre')
             manual_words = session.get('manual_words')
             source_prefer = request.form.get('source_prefer', '').strip().lower()
-            
+
             # CSV・手入力 両方あり＆未選択 ⇒ 選択ダイアログ表示のためテンプレ再描画
             if (csv_genre and manual_genre) and (csv_words and manual_words) and source_prefer not in {'csv', 'manual'}:
                 logger.info("%s：入力データが両方（CSVファイル、手入力）あり、選択待ち", page_title)
@@ -63,7 +61,7 @@ def index():
                     need_source_choice=True,
                     default_manual_count=DEFAULT_MANUAL_INPUT_COUNT
                 )
-            
+
             # 使用ソース決定
             if source_prefer == 'manual' or (manual_genre and manual_words and not csv_words):
                 logging.info("%s：手入力データ使用", page_title)
@@ -73,12 +71,12 @@ def index():
                 logging.info("%s：CSVデータ使用", page_title)
                 genre, words = csv_genre, csv_words
                 used_source = 'csv'
-            
+
             if not genre or not words:
                 logging.warning("%s：ジャンルもしくは単語の有効なデータがありません。", page_title)
                 flash('ジャンル、もしくは単語に有効なデータがありません。')
                 return redirect(url_for('narabikae.index'))
-            
+
             # 出題数を取得（不正の場合、デフォルト値に矯正）
             is_invalid, question_count = form_helpers.parse_int(
                 request, 'question_count', DEFAULT_QUESTION_COUNT, min_value = 1
@@ -113,7 +111,8 @@ def index():
                 words=shuffled_words,
                 count=question_count,
                 kana_mode=kana_mode,
-                used_source=used_source
+                used_source=used_source,
+                back_url=url_for(f"{sheet_key}.index")
             )
 
     # request.method == GET（初期表示）

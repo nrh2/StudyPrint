@@ -10,6 +10,11 @@
 
 {% block print_content %}{% endblock %}
 
+<!-- ============ 前画面に戻るボタン ============ -->
+<form action="{{ back_url }}" method="get">
+    <button class="no_print" type="submit">前画面に戻る</button>
+</form>
+
 {% endblock %}
 
 
