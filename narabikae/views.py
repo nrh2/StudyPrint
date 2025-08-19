@@ -22,30 +22,38 @@ def index():
         logger.info("%s：リクエスト受信（ポスト）", page_title)
         action = request.form.get('action')
 
-        # 1) CSV読込 ⇒ セッション保存
+        # 1) CSVファイルを選択 ⇒ セッション保存
         if action == 'csv_load':
-
+            logging.info('%s：CSV読込', page_title)
             csv_load_success, filename, genre, words = form_helpers.load_csv_from_request(request, read_csv)
 
             if csv_load_success:
                 logger.info("%s：正常にCSVファイル読込 ファイル名=%s ジャンル=%s 単語数=%d", page_title, filename, genre, len(words))
+                session['filename'] = filename
+                session['genre'] = genre
+                session['words'] = words
             else:
                 logger.warning("%s：CSVファイルが未指定です。", page_title)
             return redirect(url_for('narabikae.index'))
 
-        # 2）手入力保存 ⇒ セッション保存
+        # 2）手入力 ⇒ セッション保存
         if action == 'manual_save':
+            logging.info('%s：手入力ボタン押下', page_title)
             manual_genre, manual_words = form_helpers.save_manual_from_request(request)
             logger.info("%s：正常に手入力保存 ジャンル=%s 単語数=%d", page_title, manual_genre, len(manual_words))
             return redirect(url_for('narabikae.index'))
 
-        # 3）CSVファイル or 手入力 選択
+        # 3）問題を作成
         if action == 'generate':
+            logging.info('%s：問題を作成ボタン押下', page_title)
+            filename = session.get('filename')
             csv_genre = session.get('genre')
-            csv_words = session.get('words')
+            csv_words = session.get('words', [])
             manual_genre = session.get('manual_genre')
-            manual_words = session.get('manual_words')
+            manual_words = session.get('manual_words', [])
             source_prefer = request.form.get('source_prefer', '').strip().lower()
+            logging.info('%s：filename=%s csv_genre=%s len(csv_words)=%s manual_genre=%s len(manual_words)=%s source_prefer=%s',\
+                         page_title, filename, csv_genre, len(csv_words), manual_genre, len(manual_words), source_prefer)
 
             # CSV・手入力 両方あり＆未選択 ⇒ 選択ダイアログ表示のためテンプレ再描画
             if (csv_genre and manual_genre) and (csv_words and manual_words) and source_prefer not in {'csv', 'manual'}:
@@ -56,8 +64,11 @@ def index():
                     title=page_title,
                     kana_modes=KANA_MODES,
                     default_count=DEFAULT_QUESTION_COUNT,
-                    session_genre=csv_genre, session_words=csv_words,
-                    manual_genre=manual_genre, manual_words=manual_words,
+                    session_filename=filename,
+                    session_genre=csv_genre,
+                    session_words=csv_words,
+                    manual_genre=manual_genre,
+                    manual_words=manual_words,
                     need_source_choice=True,
                     default_manual_count=DEFAULT_MANUAL_INPUT_COUNT
                 )
@@ -115,11 +126,25 @@ def index():
                 back_url=url_for(f"{sheet_key}.index")
             )
 
-    # request.method == GET（初期表示）
+    # request.method == GET（画面表示）
     logger.info("%s：初期表示（GET）", page_title)
+    logging.info('%s：filename=%s csv_genre=%s len(csv_words)=%s manual_genre=%s len(manual_words)=%s source_prefer=%s',
+                 page_title,
+                 session.get('filename'),
+                 session.get('csv_genre'),
+                 len(session.get('csv_words', [])),
+                 session.get('manual_genre'),
+                 len(session.get('manual_words', [])),
+                 session.get('source_prefer')
+    )
     return render_template(
         'narabikae.html',
         title=page_title,
         kana_modes=KANA_MODES,
+        session_filename=session.get('filename'),
+        session_genre=session.get('csv_genre'),
+        session_words=session.get('csv_words'),
+        manual_genre=session.get('manual_genre'),
+        manual_words=session.get('manual_words'),
         default_count=DEFAULT_QUESTION_COUNT
     )

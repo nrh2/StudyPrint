@@ -5,11 +5,17 @@
 <!-- ============ CSV 取り込み ============ -->
 <section class="card">
     <h2>CSVファイルから取り込む</h2>
-    <form action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
+    <form id="csvForm" action="{{ url_for('narabikae.index') }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="csv_load">
         <label class="form-label">CSVファイルを選択：</label>
-        <input class="form-input" type="file" name="csv_file" accept=".csv">
+        <input class="form-input" type="file" name="csv_file" accept=".csv" onchange="document.getElementById('csvForm').submit();">
     </form>
+    
+    {% if session_filename %}
+        <p>選択中のファイル：{{ session_filename }}</p>
+    {% else %}
+        <p>選択されていません。</p>
+    {% endif %}
 </section>
 
 <hr>
@@ -60,6 +66,8 @@
         </div>
     </div>
 </div>
+
+<hr>
 
 <!-- ============ 問題を作成 ============ -->
 <section class="card">
