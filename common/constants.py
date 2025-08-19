@@ -21,10 +21,22 @@ SHEET_INFO = {
         "endpoint" : "narabikae.index",
         "icon" : ""
     },
-    "kana_hennkann": {
-        "label" : "ひらがな カタカナ へんかん",
-        "summary" : "ひらがな／カタカナの変換練習",
-        "endpoint" : "kana_hennkann.index",
+    "kotobasagasi": {
+        "label" : "【未実装】かくされた ことばを さがそう！",
+        "summary" : "隠れた言葉を探す",
+        "endpoint" : "kotobasagasi.index",
+        "icon" : ""
+    },
+    "zukeisagasi": {
+        "label" : "【未実装】かくされた ずけいを さがそう！",
+        "summary" : "図形探し",
+        "endpoint" : "zukeisagasi.index",
+        "icon" : ""
+    },
+    "keisann": {
+        "label" : "【未実装】けいさん できるかな？",
+        "summary" : "四則演算の練習",
+        "endpoint" : "keisann.index",
         "icon" : ""
     }
 }
