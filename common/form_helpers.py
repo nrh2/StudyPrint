@@ -62,26 +62,24 @@ def parse_int(
 
 def load_csv_from_request(
     request: Request,
-    read_csv_fn: Callable,
-    csv_field: str = 'csv_file',
-    session_filename: str = 'filename',
-    session_genre_key: str = 'genre',
-    session_words_key: str = 'words'
+    read_csv_fn: Callable
 ) -> Tuple[bool, Optional[str], Optional[str], list[str]]:
     """
-    アップロードされたCSVを読み取り、（bool、ファイル名、ジャンル、ワード）を返す。
+    アップロードされたCSVを読み取り、（bool、ファイル名、ジャンル、ことばリスト）を返す。
     成功時はセッションにも保存する。
     ファイル未指定等なら、bool:False
     """
-    file = request.files.get(csv_field)
+    file = request.files.get("csv_file")
     if not (file and file.filename):
         return False, None, None, []
+
     genre, words = read_csv_fn(file.stream)
     words = words or []
-    session[session_filename] = file.filename
-    session[session_genre_key] = genre
-    session[session_words_key] = words
-    return True, file.filename, genre, words
+    filename = file.filename
+    session['filename'] = filename
+    session['genre'] = genre
+    session['words'] = words
+    return True, filename, genre, words
 
 
 def save_manual_from_request(
