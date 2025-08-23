@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import io, chardet
 from typing import Callable, Tuple, Optional
 from flask import Request, session
 
@@ -60,6 +61,23 @@ def parse_int(
     return False, v
 
 
+def csv_decode_utf8(file):
+    """
+    CSVファイルがUTF-8で読み込めるか確認。
+    読み込めない場合、utf-8にデコード。
+    """
+    raw = file.read()   # バイナリ読込
+
+    # UTF-8で読めるか確認
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        result = chardet.detect(raw)
+        encoding = result["encoding"] or "utf-8"
+        text = raw.decode(encoding, errors="replace")
+    return text
+
+
 def load_csv_from_request(
     request: Request,
     read_csv_fn: Callable
@@ -73,7 +91,8 @@ def load_csv_from_request(
     if not (file and file.filename):
         return False, None, None, []
 
-    genre, words = read_csv_fn(file.stream)
+    utf8_text = csv_decode_utf8(file)
+    genre, words = read_csv_fn(io.StringIO(utf8_text))
     words = words or []
     filename = file.filename
     session['filename'] = filename
