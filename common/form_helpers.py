@@ -1,12 +1,40 @@
 # -*- coding: utf-8 -*-
-import io, chardet
+import io, chardet, logging
 from typing import Callable, Tuple, Optional
 from flask import Request, session
+from . import utils
 
+logger = logging.getLogger(__name__)
 
 def is_retry(request: Request) -> bool:
     """POSTパラメータの is_retry を真偽値化"""
     return request.form.get('is_retry', '').lower() == 'true'
+
+
+def load_csv_from_request(
+    request: Request,
+    read_csv_fn: Callable
+) -> Tuple[bool, Optional[str], Optional[str], list[str]]:
+    """
+    アップロードされたCSVを読み取り、（bool、ファイル名、ジャンル、ことばリスト）を返す。
+    成功時はセッションにも保存する。
+    ファイル未指定等なら、bool:False
+    """
+    read_csv_fn_name = getattr(read_csv_fn, "__name__", str(read_csv_fn))
+    logging.info('Call utils.load_csv_from_request() request=%s read_csv_fn=%s', request, read_csv_fn_name)
+    file = request.files.get("csv_file")
+    if not (file and file.filename):
+        return False, None, None, []
+
+    utf8_text = utils.csv_decode_utf8(file)             # bytes を str に変換
+    genre, words = read_csv_fn(io.StringIO(utf8_text))  # str を StringIO に包んで渡す
+    words = words or []
+    filename = file.filename
+    session['filename'] = filename
+    session['genre'] = genre
+    session['words'] = words
+    return True, filename, genre, words
+
 
 def load_genre_words(
     request: Request,
@@ -59,46 +87,6 @@ def parse_int(
     if (max_value is not None) and v > max_value:
         v = max_value
     return False, v
-
-
-def csv_decode_utf8(file):
-    """
-    CSVファイルがUTF-8で読み込めるか確認。
-    読み込めない場合、utf-8にデコード。
-    """
-    raw = file.read()   # バイナリ読込
-
-    # UTF-8で読めるか確認
-    try:
-        text = raw.decode("utf-8")
-    except UnicodeDecodeError:
-        result = chardet.detect(raw)
-        encoding = result["encoding"] or "utf-8"
-        text = raw.decode(encoding, errors="replace")
-    return text
-
-
-def load_csv_from_request(
-    request: Request,
-    read_csv_fn: Callable
-) -> Tuple[bool, Optional[str], Optional[str], list[str]]:
-    """
-    アップロードされたCSVを読み取り、（bool、ファイル名、ジャンル、ことばリスト）を返す。
-    成功時はセッションにも保存する。
-    ファイル未指定等なら、bool:False
-    """
-    file = request.files.get("csv_file")
-    if not (file and file.filename):
-        return False, None, None, []
-
-    utf8_text = csv_decode_utf8(file)
-    genre, words = read_csv_fn(io.StringIO(utf8_text))
-    words = words or []
-    filename = file.filename
-    session['filename'] = filename
-    session['genre'] = genre
-    session['words'] = words
-    return True, filename, genre, words
 
 
 def save_manual_from_request(
