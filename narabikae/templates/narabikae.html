@@ -10,9 +10,9 @@
         <label class="form-label">CSVファイルを選択：</label>
         <input class="form-input" type="file" name="csv_file" accept=".csv" onchange="document.getElementById('csvForm').submit();">
     </form>
-    
-    {% if session_filename %}
-        <p>選択中のファイル：{{ session_filename }}</p>
+
+    {% if filename %}
+        <p>選択中のファイル：{{ filename }}</p>
     {% else %}
         <p>選択されていません。</p>
     {% endif %}
@@ -20,11 +20,17 @@
 
 <hr>
 
-<!-- ============ 手入力ダイアログ起動 ============ -->
+<!-- ============ 手入力 / 情報更新ダイアログ起動 ============ -->
 <section class="card">
-    <h2>手入力</h2>
-    <p>下記ボタンからジャンルとことばを入力できます。</p>
-    <button class="button" type="button" id="openManualBtn">ことば入力</button>
+    {% if filename %}
+        <h2>CSVファイル情報更新</h2>
+        <p>下記ボタンからCSVファイルの情報を更新できます。</p>
+        <button class="button" type="button" id="openManualBtn">情報更新</button>
+    {% else %}
+        <h2>ジャンル / ことばの手入力</h2>
+        <p>下記ボタンからジャンルとことばを入力できます。</p>
+        <button class="button" type="button" id="openManualBtn">新しいことば入力</button>
+    {% endif %}
 </section>
 
 <!-- ============ 手入力モーダル ============ -->
@@ -33,32 +39,46 @@
 
     <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="manualModalTitle">
         <div class="modal__header">
-            <h3 id="manualModalTitle">ジャンルと使用することばを入力してください</h3>
+            {% if filename %}
+                <h3 id="manualModalTitle">ジャンルと使用することばを修正、または追加してください</h3>
+            {% else %}
+                <h3 id="manualModalTitle">ジャンルと使用することばを入力してください</h3>
+            {% endif %}
         </div>
 
         <div class="modal__body">
             <form id="manualForm" action="{{ url_for('narabikae.index') }}" method="post">
                 <input type="hidden" name="action" value="manual_save">
 
-                <label class="form-label" for="manual_genre">ジャンル名：</label>
-                <input class="form-input" id="manual_genre" name="manual_genre" type="text"
-                       value="{{ manual_genre|default('') }}">
-                <br><br>
+                <label class="form-label" for="genre">ジャンル名：</label>
+                {% if filename %}
+                    <input class="form-input" id="genre" name="genre" type="text"
+                        value="{{ genre }}">
+                {% else %}
+                    <input class="form-input" id="genre" name="genre" type="text"
+                        value="{{ genre|default('') }}">
+                {% endif %}
+                        <br><br>
 
                 <label class="form-label">ことば入力</label>
                 <br>
                 {# 単語入力ボックス（初期5個） #}
-                {% set cnt = default_manual_count or 5 %}
-                {% for i in range(cnt) %}
-                    <label class="form-label" for="manual_word_{{ i }}">{{ i+1 }}</label>
-                    <input class="form-input" id="manual_word_{{ i }}" name="manual_words" type="text"
-                    value="{{ manual_words[i] if manual_words and i < manual_words|length else '' }}">
+                {% set word_box_cnt = default_manual_input_count %}
+                {% for i in range(word_box_cnt) %}
+                    <label class="form-label" for="word_{{ i }}">{{ i+1 }}</label>
+                    {% if filename %}
+                        <input class="form-input" id="word_{{ i }}" name="words" type="text"
+                        value="{{ words[i] if words and i < words|length else '' }}">
+                    {% else %}
+                        <input class="form-input" id="word_{{ i }}" name="words" type="text"
+                        value="{{ words[i] if words and i < words|length else '' }}">
+                    {% endif %}
                     <br>
                 {% endfor %}
 
                 <br>
                 <div class="modal__footer">
-                    <button class="button button--primary" type="submit">保存</button>
+                    <button class="button button--primary" type="submit" id="saveManualBtn">保存</button>
                     <button class="button" type="button" id="closeManualBtn">キャンセル</button>
                 </div>
 
