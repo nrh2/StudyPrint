@@ -31,3 +31,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && modal.style.display !== 'none') closeModal();
   });
 });
+
+//更新した内容をCSVファイルに反映する
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("manualForm");
+  const saveBtn = document.getElementById("saveManualBtn");
+  const hasCsv = document.body.dataset.hasCsv === "true";
+
+  if (form && saveBtn) {
+    form.addEventListener("submit", function (event) {
+      if (hasCsv) {
+        const confirmed = confirm("CSVファイルの情報を更新します。よろしいですか？");
+        if (!confirmed) {
+          event.preventDefault(); // キャンセル時は送信しない
+        }
+      }
+    });
+  }
+});

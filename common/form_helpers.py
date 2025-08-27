@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import io, chardet, logging
+import io, logging
 from typing import Callable, Tuple, Optional
 from flask import Request, session
 from . import utils
@@ -39,9 +39,6 @@ def load_csv_from_request(
 def load_genre_words(
     request: Request,
     read_csv_fn: Callable,
-    csv_field: str = 'csv_file',
-    session_genre_key: str = 'genre',
-    session_words_key: str = 'words',
     use_session_when_retry: bool = True,
 ) -> Tuple[Optional[str], list[str], str]:
 
@@ -55,17 +52,17 @@ def load_genre_words(
 
     # リトライモードの場合、セッション情報からジャンルと単語を取得
     if use_session_when_retry and request.form.get('is_retry', '').lower() == 'true':
-        genre = session.get(session_genre_key)
-        words = session.get(session_words_key) or []
+        genre = session.get('genre')
+        words = session.get('words') or []
         return genre, words, ('session' if (genre and words) else 'none')
 
     # CSVファイルを読み込んだ場合、CSVファイルからジャンルと単語を取得
-    file = request.files.get(csv_field)
+    file = request.files.get('csv_file')
     if file and file.filename:
         genre, words = read_csv_fn(file.stream)
         words = words or []
-        session[session_genre_key] = genre
-        session[session_words_key] = words
+        session['genre'] = genre
+        session['words'] = words
         source = 'csv'
     return genre, words, source
 
@@ -89,17 +86,15 @@ def parse_int(
     return False, v
 
 
-def save_manual_from_request(
-    request: Request,
-    session_genre_key: str = 'manual_genre',
-    session_words_key: str = 'manual_words'
-) -> Tuple[str, list[str]]:
-    """フォームからの手入力（ジャンル/ことば[]）を読み取り、空白除去してセッションに保存"""
-    manual_genre = (request.form.get('manual_genre') or '').strip()
-    manual_words = [w.strip() for w in request.form.getlist('manual_words')]
-    manual_words = [w for w in manual_words if w]   # 空白除去
-    session[session_genre_key] = manual_genre
-    session[session_words_key] = manual_words
-    return manual_genre, manual_words
-
-
+def save_manual_from_request(request: Request) -> Tuple[str, list[str]]:
+    """
+    フォームからの手入力（ジャンル/ことば[]）を読み取り、空白除去してセッションに保存
+    """
+    logging.info('Call save_manual_from_request()')
+    genre = (request.form.get('genre') or '').strip()
+    words = [w.strip() for w in request.form.getlist('words')]
+    words = [w for w in words if w]   # 空白除去
+    session['genre'] = genre
+    session['words'] = words
+    logging.info('★★★★AFTER  save_manual_from_request genre=%s words_count=%s', genre, len(words))
+    return genre, words

@@ -50,12 +50,30 @@ def csv_decode_utf8(file) -> str:
 # 【使用アプリ】
 # ことば並び替え
 def read_csv(file_stream) -> Tuple[str, List[str]]:
-    logging.info('Call utils.read_csv')
+    logging.info('Call utils.read_csv()')
     csv_text = file_stream.read().splitlines()
     reader = csv.reader(csv_text)
 
     rows = list(reader)
-    genre = rows[0][0]  # 1行目（ジャンル名）
-    words = [row[0] for row in rows[1:] if row]  # 2行目以降（単語リスト）
+    genre = rows[0][0]  # 1行目（ジャンル）
+    words = [row[0] for row in rows[1:] if row]  # 2行目以降（ことばリスト）
 
     return genre, words
+
+
+
+# ジャンルとことばリストからCSV文字列を生成して返す
+# 【使用アプリ】
+# ことば並び替え
+def create_csv_text(genre, words) -> str:
+    logging.info('Call Create_csv_file()')
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([genre])    # 1行目（ジャンル）
+    for w in words:
+        writer.writerow([w])    # 2行目以降（ことばリスト）
+
+    session['genre'] = genre
+    session['words'] = words
+    session['filename'] = f"{genre}.csv"
+    return output.getvalue()

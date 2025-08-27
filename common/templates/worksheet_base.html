@@ -5,7 +5,7 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body data-has-csv="{{ 'true' if session_filename else 'false' }}">
     <!-- 共通タイトル -->
     <h1 class="page_title">{{ title }}</h1>
 
