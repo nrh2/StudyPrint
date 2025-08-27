@@ -43,3 +43,6 @@ instance/
 
 # テキストファイル
 *.txt
+
+# CSVファイル
+*.csv
