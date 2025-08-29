@@ -42,13 +42,12 @@ def index():
         if action == 'manual_save':
             # フォームからジャンルとことばリストを取得
             genre, words = form_helpers.save_manual_from_request(request)
-            logging.info('★★★★★★★★genre=%s words_count=%s', genre, len(words))
+            logging.info('genre=%s words_count=%s', genre, len(words))
             try:
                 # 取得したジャンルとことばを使用し、CSV文字列を作成
                 csv_text = utils.create_csv_text(genre, words)
 
                 logging.info('%s：CSVファイル作成 genre=%s words_count=%s', page_title, session['genre'], len(session['words']))
-                flash("CSVファイルを作成しました。保存して下さい。")
 
                 filename = session['filename']
                 quoted_filename = quote(filename)

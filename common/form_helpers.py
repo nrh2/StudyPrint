@@ -96,5 +96,5 @@ def save_manual_from_request(request: Request) -> Tuple[str, list[str]]:
     words = [w for w in words if w]   # 空白除去
     session['genre'] = genre
     session['words'] = words
-    logging.info('★★★★AFTER  save_manual_from_request genre=%s words_count=%s', genre, len(words))
+    logging.info('return save_manual_from_request() genre=%s words_count=%s', genre, len(words))
     return genre, words
