@@ -12,9 +12,22 @@
     </form>
 
     {% if filename %}
+        <!-- CSV情報リセット -->
+        <form action="{{ url_for('narabikae.index') }}" method="post">
+            <input type="hidden" name="action" value="csv_reset">
+            <button class="button" type="submit" onclick="return confirm('CSV情報をリセットしますか？')">CSV情報リセット</button>
+        </form>
+
+    {% else %}
+        <!-- CSV情報作成 -->
+        <button class="button" type="button" id="openManualBtn">CSV情報作成</button>
+
+    {% endif %}
+
+    {% if filename %}
         <p>選択中のファイル：{{ filename }}</p>
     {% else %}
-        <p>選択されていません。</p>
+        <p>CSVファイルが選択されていません。</p>
     {% endif %}
 </section>
 
@@ -22,14 +35,12 @@
 
 <!-- ============ 手入力 / 情報更新ダイアログ起動 ============ -->
 <section class="card">
+    <h2>CSVファイル情報更新</h2>
     {% if filename %}
-        <h2>CSVファイル情報更新</h2>
         <p>下記ボタンからCSVファイルの情報を更新できます。</p>
         <button class="button" type="button" id="openManualBtn">情報更新</button>
     {% else %}
-        <h2>ジャンル / ことばの手入力</h2>
-        <p>下記ボタンからジャンルとことばを入力できます。</p>
-        <button class="button" type="button" id="openManualBtn">新しいことば入力</button>
+        <p>「CSV情報作成」ボタンからジャンルとことばを入力してください。</p>
     {% endif %}
 </section>
 

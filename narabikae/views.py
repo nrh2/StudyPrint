@@ -23,7 +23,7 @@ def index():
         action = request.form.get('action')
         logger.info("%s：リクエスト受信（ポスト） action=%s", page_title, action)
 
-        # 1) CSVファイルを選択 ⇒ セッション保存
+        # CSVファイルを選択 ⇒ セッション保存
         if action == 'csv_load':
             logging.info('%s：CSV読込', page_title)
             csv_load_success, filename, genre, words = form_helpers.load_csv_from_request(request, read_csv)
@@ -37,8 +37,17 @@ def index():
                 logger.warning("%s：CSVファイルが未指定です。", page_title)
             return redirect(url_for('narabikae.index'))
 
+        # セッション情報を削除
+        if action == 'csv_reset':
+            logging.info('%s：セッション情報削除', page_title)
+            session['filename'] = None
+            session['genre'] = ""
+            session['words'] = []
+            logging.info('%s：セッション情報削除完了 filename=%s, genre=%s, words_count=%s', page_title, session['filename'], session['genre'], len(session['words']))
 
-        # 2）手入力ボタン ⇒ 保存ボタン
+
+
+        # 手入力ボタン ⇒ 保存ボタン
         if action == 'manual_save':
             # フォームからジャンルとことばリストを取得
             genre, words = form_helpers.save_manual_from_request(request)
@@ -67,7 +76,7 @@ def index():
                 return redirect(url_for('narabikae.index'))
 
 
-        # 3）問題を作成
+        # 問題を作成
         if action == 'generate':
             logging.info('%s：問題を作成ボタン押下', page_title)
             filename = session.get('filename')
