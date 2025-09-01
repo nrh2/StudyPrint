@@ -46,34 +46,43 @@ def index():
             logging.info('%s：セッション情報削除完了 filename=%s, genre=%s, words_count=%s', page_title, session['filename'], session['genre'], len(session['words']))
 
 
-
-        # 手入力ボタン ⇒ 保存ボタン
+        # CSV情報更新ボタン ⇒ 保存ボタン
         if action == 'manual_save':
+            logging.info('%s：CSV情報更新', page_title)
             # フォームからジャンルとことばリストを取得
             genre, words = form_helpers.save_manual_from_request(request)
-            logging.info('genre=%s words_count=%s', genre, len(words))
-            try:
-                # 取得したジャンルとことばを使用し、CSV文字列を作成
-                csv_text = utils.create_csv_text(genre, words)
 
-                logging.info('%s：CSVファイル作成 genre=%s words_count=%s', page_title, session['genre'], len(session['words']))
+            if not genre:
+                logging.info('%s：ジャンルデータなし', page_title)
+                flash("ジャンルが入力されていません。")
+            elif not words:
+                logging.info('%s：ことばが入力されていません。', page_title)
+                flash("ことばが入力されていません。")
+            else:
+                logging.info('genre=%s words_count=%s', genre, len(words))
+                try:
+                    # 取得したジャンルとことばを使用し、CSV文字列を作成
+                    csv_text = utils.create_csv_text(genre, words)
 
-                filename = session['filename']
-                quoted_filename = quote(filename)
+                    logging.info('%s：CSVファイル作成 genre=%s words_count=%s', page_title, session['genre'], len(session['words']))
 
-                # レスポンスを返す（ユーザーが保存先を選択）
-                return Response(
-                    csv_text,
-                    mimetype="text/csv; charset=utf-8",
-                    headers={
-                        "Content-Disposition": f"attachment; filename*=UTF-8''{quoted_filename}"
-                    }
-                )
+                    filename = session['filename']
+                    quoted_filename = quote(filename)
 
-            except Exception as e:
-                logging.error("%s：CSVファイル作成失敗 error=%s", page_title, str(e))
-                flash("CSVファイルの作成に失敗しました。")
-                return redirect(url_for('narabikae.index'))
+                    flash("CSVファイルを保存しました。")
+                    # レスポンスを返す（ユーザーが保存先を選択）
+                    return Response(
+                        csv_text,
+                        mimetype="text/csv; charset=utf-8",
+                        headers={
+                            "Content-Disposition": f"attachment; filename*=UTF-8''{quoted_filename}"
+                        }
+                    )
+
+                except Exception as e:
+                    logging.error("%s：CSVファイル作成失敗 error=%s", page_title, str(e))
+                    flash("CSVファイルの作成に失敗しました。")
+                    return redirect(url_for('narabikae.index'))
 
 
         # 問題を作成

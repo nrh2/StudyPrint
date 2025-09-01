@@ -65,6 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (form && saveBtn) {
     form.addEventListener("submit", function (event) {
+      // 入力チェック
+      const genre = document.getElementById("genre").value.trim();
+      const words = Array.from(document.getElementsByName("words"))
+                        .map(w => w.value.trim())
+                        .filter(Boolean);
+
+      let errMsg = "";
+      if (!genre) {
+        errMsg = "ジャンルが入力されていません。"
+      } else if (words.length === 0 ) {
+        errMsg = "ことばが1つも入力されていません。"
+      }
+
+      if (errMsg) {
+        event.preventDefault();   // サーバー送信を止める
+        const errBox = document.getElementById("manualErrBox");
+        if (errBox) {
+          errBox.textContent = errMsg;
+          errBox.style.display = "block";
+        }
+        return;   // 入力エラーがあればここで終了
+      }
+
       if (hasCsv) {
         const confirmed = confirm("CSVファイルの情報を更新します。よろしいですか？");
         if (!confirmed) {
