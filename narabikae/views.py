@@ -22,6 +22,10 @@ def index():
     if request.method == 'POST':
         action = request.form.get('action')
         logger.info("%s：リクエスト受信（ポスト） action=%s", page_title, action)
+        
+        logging.info("DEBUG: session['words'] type=%s value=%s",
+             type(session.get('words')), session.get('words'))
+
 
         # CSVファイルを選択 ⇒ セッション保存
         if action == 'csv_load':
@@ -36,6 +40,24 @@ def index():
             else:
                 logger.warning("%s：CSVファイルが未指定です。", page_title)
             return redirect(url_for('narabikae.index'))
+
+
+        # ことばリスト数変更
+        if action == 'update_words_count':
+            is_invalid, words_count = form_helpers.parse_int(
+                                request, 'words_count', DEFAULT_MANUAL_INPUT_COUNT, min_value = 1
+                            )
+            if is_invalid:
+                # 入力値が不正：デフォルト値を使用
+                logging.info("%s：入力が不正のため、ことばリスト数をデフォルト値（%s）に戻しました。", page_title, words_count)
+            else:
+                # 入力値が正常：ことばリスト数変更
+                logging.info("%s：ことばリスト数を%sに変更", page_title, words_count)
+
+            session['words_count'] = words_count
+            session['reopen_modal'] = True
+            return redirect(url_for(f"{sheet_key}.index"))
+
 
         # セッション情報を削除
         if action == 'csv_reset':

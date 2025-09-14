@@ -1,23 +1,30 @@
-//単純にコピペしただけ。内容を確認すること！！
-
 
 document.addEventListener('DOMContentLoaded', function () {
-  const openBtn   = document.getElementById('openManualBtn');
-  const modal     = document.getElementById('manualModal');
-  const backdrop  = document.getElementById('manualBackdrop');
-  const returnBtn = document.getElementById('returnManualBtn');
 
+  // ========== 定数定義 ==========
+  const form = document.getElementById("manualForm");
+  const actionInput = document.getElementById("manualAction");
+  const modal     = document.getElementById('manualModal');
+  const reopenModal = document.body.dataset.reopenModal === "True";
+  const backdrop  = document.getElementById('manualBackdrop');
+  const openBtn   = document.getElementById('openManualBtn');
+  const returnBtn = document.getElementById('returnManualBtn');
+  const saveBtn = document.getElementById("saveManualBtn");
+  const updateBtn = document.getElementById("updateWordsCountBtn");
+  const hasCsv = document.body.dataset.hasCsv === "true";
+  const errBox = document.getElementById("manualErrBox");
+
+  // openBtn / modal / backdrop の存在確認
   if (!openBtn || !modal || !backdrop) {
-    console.warn('[modal] 必須要素が見つかりません。IDを確認してください。');
+    console.warn('[modal] 必須要素であるopenBtn / modal / backdrop のいずれかが見つかりません。IDを確認してください。');
     return;
   }
 
+  // ========== モーダル関連の関数 ==========
   // モーダルを開く
   function openModal() {
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
-    const firstInput = modal.querySelector('input, button, textarea, select');
-    if (firstInput) firstInput.focus();
   }
 
   // モーダルを閉じる
@@ -26,10 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.setAttribute('aria-hidden', 'true');
   }
 
-  // 元画面にリダイレクト
+  // 元画面にリダイレクトする
   function redirectPreviousPage() {
-    const returnBtn = document.getElementById('returnManualBtn');
-
     if (returnBtn && returnBtn.form) {
       // 戻るボタン押下するとreturnBtnが含まれるフォームのactionのURLを取得
       const actionUrl = returnBtn.form.getAttribute('action')
@@ -39,60 +44,66 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  //*********************************************************************
+  // ========== 入力チェック ==========
+  function validateForm() {
+    const genre = document.getElementById('genre').value.trim();
+    const words = Array.form(document.getElementByName('words'))
+                       .map(w => w.value.trim())
+                       .filter(Boolean);
+
+    if (!genre) return "ジャンルが入力されていません。"
+    if (words.length === 0 ) return "ことばが1つも入力されていません。"
+    return "";  // エラーなし
+  }
+
+
+  // ========== アクション選択 ==========
+function chooseSaveUpdateValue(btnName, actionValue) {
+  btnName.addEventListener("click", () => {
+      actionInput.value = actionValue
+    });
+}
+chooseSaveUpdateValue(saveBtn, "manual_save")
+chooseSaveUpdateValue(updateBtn, "update_words_count")
+
+  // ========== イベントリスナー登録 ==========
   // モーダルを開く
-  openBtn.addEventListener('click', openModal);
+  if (openBtn) openBtn.addEventListener('click', openModal);
+
+  // モーダルを再度開く
+  if (reopenModal) openModal();
 
   // 背景クリック → モーダルを閉じる
-  backdrop.addEventListener('click', closeModal);
-
-  // 戻るボタンクリック → 元の画面にリダイレクト
-  if (returnBtn) {
-    returnBtn.addEventListener('click', redirectPreviousPage);
-  }
+  if (backdrop) backdrop.addEventListener('click', closeModal);
 
   // Escapeキークリック → モーダルを閉じる
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.style.display !== 'none') closeModal();
   });
-});
 
-//更新した内容をCSVファイルに反映する
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("manualForm");
-  const saveBtn = document.getElementById("saveManualBtn");
-  const hasCsv = document.body.dataset.hasCsv === "true";
+  // 戻るボタンクリック → 元の画面にリダイレクト
+  if (returnBtn) returnBtn.addEventListener('click', redirectPreviousPage);
 
-  if (form && saveBtn) {
-    form.addEventListener("submit", function (event) {
-      // 入力チェック
-      const genre = document.getElementById("genre").value.trim();
-      const words = Array.from(document.getElementsByName("words"))
-                        .map(w => w.value.trim())
-                        .filter(Boolean);
 
-      let errMsg = "";
-      if (!genre) {
-        errMsg = "ジャンルが入力されていません。"
-      } else if (words.length === 0 ) {
-        errMsg = "ことばが1つも入力されていません。"
-      }
+  // ========== フォーム送信 ==========
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      // 保存ボタンクリック ⇒ CSVファイルデータを保存
+      if (actionInput.value === "manual_save") {
+        const errMsg = validateForm();
 
-      if (errMsg) {
-        event.preventDefault();   // サーバー送信を止める
-        const errBox = document.getElementById("manualErrBox");
-        if (errBox) {
-          errBox.textContent = errMsg;
-          errBox.style.display = "block";
+        if (errMsg) {
+          event.preventDefault();   // サーバー送信を止める
+          if (errBox) {
+            errBox.textContent = errMsg;
+            errBox.style.display = "block";
+          }
+          return;   // 入力エラーがあればここで終了
         }
-        return;   // 入力エラーがあればここで終了
-      }
 
-      if (hasCsv) {
-        const confirmed = confirm("CSVファイルの情報を更新します。よろしいですか？");
-        if (!confirmed) {
+        if (hasCsv && confirm("CSVファイルの情報を更新します。よろしいですか？")) {
           event.preventDefault(); // キャンセル時は送信しない
-          return;
+           return;
         }
       }
     });

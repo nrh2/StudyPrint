@@ -59,7 +59,7 @@
 
         <div class="modal__body">
             <form id="manualForm" action="{{ url_for('narabikae.index') }}" method="post">
-                <input type="hidden" name="action" value="manual_save">
+                <input type="hidden" name="action" value="manual_save" id="manualAction">
 
                 <label class="form-label" for="genre">ジャンル名：</label>
                 {% if filename %}
@@ -71,25 +71,31 @@
                 {% endif %}
                         <br><br>
 
-                <label class="form-label">ことば入力</label>
+                <label class="form-label">ことばリスト</label>
                 <br>
-                {# 単語入力ボックス（初期5個） #}
-                {% set word_box_cnt = default_manual_input_count %}
+                {# 単語入力ボックス取得 #}
+                {% set word_box_cnt = session.get('words_count', default_manual_input_count) %}
                 {% for i in range(word_box_cnt) %}
                     <label class="form-label" for="word_{{ i }}">{{ i+1 }}</label>
-                    {% if filename %}
                         <input class="form-input" id="word_{{ i }}" name="words" type="text"
                         value="{{ words[i] if words and i < words|length else '' }}">
-                    {% else %}
-                        <input class="form-input" id="word_{{ i }}" name="words" type="text"
-                        value="{{ words[i] if words and i < words|length else '' }}">
-                    {% endif %}
                     <br>
                 {% endfor %}
 
                 <br>
                 <div class="modal__footer">
+                    <!-- ジャンルまたはことばリストが空の時のエラーメッセージ -->
                     <div id="manualErrBox" style="display:none; color:red; margin-top:10px;"></div>
+
+                    <!-- 項目数更新ボタン -->
+                    <!-- <input type="hidden" name='action' value="update_words_count"> -->
+
+                    <label class="form-label">項目数：</label>
+                    <input class="form-input" type="number" name="words_count"
+                        value="{{ word_box_cnt }}" min="1">
+                    <button class="button button--primary" type="submit" id="updateWordsCountBtn">項目数変更</button>
+                    <br>
+
                     <button class="button button--primary" type="submit" id="saveManualBtn">保存</button>
                     <button class="button" type="button" id="returnManualBtn">戻る</button>
                 </div>
