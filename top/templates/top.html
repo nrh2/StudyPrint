@@ -10,14 +10,15 @@
 
     <form action="/" method="post" enctype="multipart/form-data">
         <!-- シート名選択-->
-        <label>シート名を選択してください。</label><br>
+        <p>シート名を選択してください。</p><br>
         {% for key, sheet_info in sheet_infos.items() %}
-            <input
-                type="radio"
-                name="sheet_name"
-                value="{{ key }}"
-                required
-            >{{ sheet_info.label }}<br>
+            <div class="sheet_option">
+                <label class="label">
+                    <input type="radio" name="sheet_name" value="{{ key }}" required>
+                    {{ sheet_info.label }}
+                </label>
+                <div class="summary">{{ sheet_info.summary }}</div>
+            </div>
         {% endfor %}
         <br>
         <button type="submit">シートを選択</button>

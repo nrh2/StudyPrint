@@ -27,10 +27,20 @@ def index():
         # Blueprint名+関数名でURL生成
         return redirect(url_for(dest_endpoint))
 
-    # GETリクエスト時（初期表示）
+    # ■GETリクエスト時（初期表示）
     logger.info("トップ：画面表示 シート数=%d", len(SHEET_INFO))
+    
+    # 表示用に加工したラベル名を設定
+    sheet_infos_display = {}
+    for key, sheet_details in SHEET_INFO.items():
+        # 元のSHEET_INFOを壊さないように辞書をコピー
+        copy_sheet_details = sheet_details.copy()
+        if not copy_sheet_details["is_completed"]:
+            copy_sheet_details["label"] = "【メンテナンス中】" + copy_sheet_details["label"]
+        sheet_infos_display[key] = copy_sheet_details
+
     return render_template(
         'top.html',
         title=page_title,
-        sheet_infos=SHEET_INFO
+        sheet_infos=sheet_infos_display
     )

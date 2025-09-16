@@ -19,25 +19,29 @@ SHEET_INFO = {
         "label" : "ならびかえて できる ことばは？",
         "summary" : "文字を並び変えて正しいことばを作る練習",
         "endpoint" : "narabikae.index",
-        "icon" : ""
+        "icon" : "",
+        "is_completed": True
     },
     "kotobasagasi": {
-        "label" : "【未実装】かくされた ことばを さがそう！",
+        "label" : "かくされた ことばを さがそう！",
         "summary" : "隠れた言葉を探す",
         "endpoint" : "kotobasagasi.index",
-        "icon" : ""
+        "icon" : "",
+        "is_completed": False
     },
     "zukeisagasi": {
-        "label" : "【未実装】かくされた ずけいを さがそう！",
+        "label" : "かくされた ずけいを さがそう！",
         "summary" : "図形探し",
         "endpoint" : "zukeisagasi.index",
-        "icon" : ""
+        "icon" : "",
+        "is_completed": False
     },
     "keisann": {
-        "label" : "【未実装】けいさん できるかな？",
+        "label" : "けいさん できるかな？",
         "summary" : "四則演算の練習",
         "endpoint" : "keisann.index",
-        "icon" : ""
+        "icon" : "",
+        "is_completed": False
     }
 }
 
