@@ -1,0 +1,57 @@
+<div class="modal" id="manualModal" aria-hidden="true" style="display:none;">
+    <div class="modal__backdrop" id="manualBackdrop"></div>
+
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="manualModalTitle">
+        <div class="modal__header">
+            {% if filename %}
+                <h3 id="manualModalTitle">ジャンルと使用することばを修正、または追加してください</h3>
+            {% else %}
+                <h3 id="manualModalTitle">ジャンルと使用することばを入力してください</h3>
+            {% endif %}
+        </div>
+
+        <div class="modal__body">
+            <form id="manualForm" action="{{ url_for('narabikae.index') }}" method="post">
+                <input type="hidden" name="action" value="manual_save" id="manualAction">
+
+                <label class="form-label" for="genre">ジャンル名：</label>
+                {% if filename %}
+                    <input class="form-input" id="genre" name="genre" type="text"
+                        value="{{ genre }}">
+                {% else %}
+                    <input class="form-input" id="genre" name="genre" type="text"
+                        value="{{ genre|default('') }}">
+                {% endif %}
+                        <br><br>
+
+                <label class="form-label">ことばリスト</label>
+                <br>
+                {# 単語入力ボックス取得 #}
+                {% set word_box_cnt = session.get('words_count', default_manual_input_count) %}
+                {% for i in range(word_box_cnt) %}
+                    <label class="form-label" for="word_{{ i }}">{{ i+1 }}</label>
+                        <input class="form-input" id="word_{{ i }}" name="words" type="text"
+                        value="{{ words[i] if words and i < words|length else '' }}">
+                    <br>
+                {% endfor %}
+
+                <br>
+                <div class="modal__footer">
+                    <!-- ジャンル、もしくはことばリストが空の時のエラーメッセージ -->
+                    <div class="csv_input_empty" id="manualErrBox"></div>
+
+
+                    <label class="form-label">項目数：</label>
+                    <input class="form-input" type="number" name="words_count"
+                        value="{{ word_box_cnt }}" min="1">
+                    <button class="button button--primary" type="submit" id="updateWordsCountBtn">項目数変更</button>
+                    <br>
+
+                    <button class="button button--primary" type="submit" id="saveManualBtn">保存</button>
+                    <button class="button" type="button" id="returnManualBtn">戻る</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
