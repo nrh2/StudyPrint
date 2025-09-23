@@ -21,7 +21,6 @@ input[type="file"] {
 /*******************************************************************/
 /*【トップ画面設定】*/
 /*******************************************************************/
-/* モーダル全体（非表示時はJSが display:none にする） */
 
 .sheet_option {
     margin-bottom: 1em;
@@ -37,6 +36,17 @@ input[type="file"] {
     color: #555;
     font-size: 0.9em;
 }
+
+/* SHEET_INFO.is_completed = False の場合、メンテナンスモード */
+.sheet_option .label.maintenance {
+    color: gray;
+}
+
+.sheet_option input[disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 
 /*******************************************************************/
 /*【手入力モーダル設定】*/
@@ -82,7 +92,14 @@ input[type="file"] {
     padding-bottom: 0.5em;
 }
 
+/* .modal__body {} */
+/* .modal__footer {} */
 
+.csv_input_empty {
+    display: none;
+    color: red;
+    margin-top: 10px;
+}
 
 .page_title {
     font-size: 40px;

@@ -84,11 +84,9 @@
 
                 <br>
                 <div class="modal__footer">
-                    <!-- ジャンルまたはことばリストが空の時のエラーメッセージ -->
-                    <div id="manualErrBox" style="display:none; color:red; margin-top:10px;"></div>
+                    <!-- ジャンル、もしくはことばリストが空の時のエラーメッセージ     ★★★修正中★★★ -->
+                    <div class="csv_input_empty" id="manualErrBox"></div>
 
-                    <!-- 項目数更新ボタン -->
-                    <!-- <input type="hidden" name='action' value="update_words_count"> -->
 
                     <label class="form-label">項目数：</label>
                     <input class="form-input" type="number" name="words_count"

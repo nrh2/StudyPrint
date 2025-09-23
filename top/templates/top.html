@@ -13,8 +13,14 @@
         <p>シート名を選択してください。</p><br>
         {% for key, sheet_info in sheet_infos.items() %}
             <div class="sheet_option">
-                <label class="label">
-                    <input type="radio" name="sheet_name" value="{{ key }}" required>
+                <label class="label {% if not sheet_info.is_completed %}maintenance{% endif %}">
+                    <input 
+                        type="radio"
+                        name="sheet_name"
+                        value="{{ key }}" 
+                        required
+                        {% if not sheet_info.is_completed %}disabled{% endif %}
+                    >
                     {{ sheet_info.label }}
                 </label>
                 <div class="summary">{{ sheet_info.summary }}</div>

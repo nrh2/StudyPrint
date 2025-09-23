@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ========== 入力チェック ==========
   function validateForm() {
     const genre = document.getElementById('genre').value.trim();
-    const words = Array.form(document.getElementByName('words'))
+    const words = Array.from(document.getElementsByName('words'))
                        .map(w => w.value.trim())
                        .filter(Boolean);
 
@@ -90,20 +90,24 @@ chooseSaveUpdateValue(updateBtn, "update_words_count")
     form.addEventListener("submit", (event) => {
       // 保存ボタンクリック ⇒ CSVファイルデータを保存
       if (actionInput.value === "manual_save") {
+        console.log("actionInput:manual_save");
         const errMsg = validateForm();
 
+        // ジャンル、ことばリストへの入力確認
         if (errMsg) {
           event.preventDefault();   // サーバー送信を止める
           if (errBox) {
             errBox.textContent = errMsg;
             errBox.style.display = "block";
           }
+          openModal(); // モーダルを閉じずに再表示
           return;   // 入力エラーがあればここで終了
         }
 
-        if (hasCsv && confirm("CSVファイルの情報を更新します。よろしいですか？")) {
+        // CSV更新確認
+        if (hasCsv && !confirm("CSVファイルの情報を更新します。よろしいですか？")) {
           event.preventDefault(); // キャンセル時は送信しない
-           return;
+          return;
         }
       }
     });
